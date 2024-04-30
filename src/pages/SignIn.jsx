@@ -37,7 +37,7 @@ function SignIn() {
       )
 
       if (userCredential.user) {
-        navigate('/Profile')
+        navigate('/')
       }
     } catch (error) {
       toast.error('Bad User Credentials')
