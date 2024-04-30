@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { toast } from "react-toastify"
 import {Link, useNavigate} from 'react-router-dom'
 import { getAuth, signInWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { setDoc, doc, serverTimestamp } from "firebase/firestore"
@@ -36,10 +37,10 @@ function SignIn() {
       )
 
       if (userCredential.user) {
-        navigate('/')
+        navigate('/Profile')
       }
     } catch (error) {
-      console.log(error)
+      toast.error('Bad User Credentials')
     }
   }
 

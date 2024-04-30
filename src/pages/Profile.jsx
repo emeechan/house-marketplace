@@ -1,16 +1,24 @@
-import { useState, useEffect } from 'react'
-import {getAuth} from 'firebase/auth'
+import { useState, useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 function Profile() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
 
-  const auth = getAuth()
   useEffect(() => {
-    setUser(auth.currentUser)
-}, [])
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
 
-    return user ? <h1>{user.displayName}</h1> : 'Not Logged In'
-  }
-  
-  export default Profile
+    return () => unsubscribe();
+  }, []);
+
+  return user ? <h1>{user.displayName}</h1> : 'Not Logged In';
+}
+
+export default Profile;
   
