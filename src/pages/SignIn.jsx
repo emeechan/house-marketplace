@@ -1,20 +1,18 @@
 import { useState } from "react"
 import {Link, useNavigate} from 'react-router-dom'
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
+import { getAuth, signInWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { setDoc, doc, serverTimestamp } from "firebase/firestore"
 import { db } from '../firebase.config'
 import {ReactComponent as ArrowRightIcon} from '../assets/svg/keyboardArrowRightIcon.svg'
 import visibilityIcon from '../assets/svg/visibilityIcon.svg'
 
-function SignUp() {
+function SignIn() {
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
-    password: ''
+    password: '',
   })
-
-  const { name, email, password } = formData
+  const { email, password } = formData
 
   const navigate = useNavigate()
 
@@ -30,66 +28,76 @@ function SignUp() {
 
     try {
       const auth = getAuth()
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-      const user = userCredential.user
 
-      await updateProfile(auth.currentUser, {
-        displayName: name
-      })
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      )
 
-      //copies everyting from our form data state
-      const formDataCopy = {...formData}
-      //removes password from object so it is not added to the database
-      delete formDataCopy.password
-      //once data is submitted, the timestamp will be added to it
-      formDataCopy.timestamp = serverTimestamp()
-
-      await setDoc(doc(db, 'users', user.uid), formDataCopy)
-
-      navigate('/')
+      if (userCredential.user) {
+        navigate('/')
+      }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   return (
     <>
-      <div className="pageContainer">
+      <div className='pageContainer'>
         <header>
-          <p className="pageHeader">Welcome Back!</p>
+          <p className='pageHeader'>Welcome Back!</p>
         </header>
 
-          <form onSubmit={onSubmit}>
-            <input type="text" className="nameInput" placeholder=" Name" id="name" value={name} onChange={onChange} />
-            <input type="email" className="emailInput" placeholder=" Email" id="email" value={email} onChange={onChange} />
+        <form onSubmit={onSubmit}>
+          <input
+            type='email'
+            className='emailInput'
+            placeholder='Email'
+            id='email'
+            value={email}
+            onChange={onChange}
+          />
 
-            <div className="passwordInputDiv">
-              <input type={showPassword ? 'text' : 'password'} className='passwordInput' placeholder=" Password" id="password" value={password} onChange={onChange} />
-              <img src={visibilityIcon} alt="show password" className="showPassword" onClick={() => setShowPassword((prevState) => !prevState)} />
-            </div>
+          <div className='passwordInputDiv'>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              className='passwordInput'
+              placeholder='Password'
+              id='password'
+              value={password}
+              onChange={onChange}
+            />
 
-            <Link to='/forgot-password' className="forgotPasswordLink">
-              Forgot Password
-            </Link>
+            <img
+              src={visibilityIcon}
+              alt='show password'
+              className='showPassword'
+              onClick={() => setShowPassword((prevState) => !prevState)}
+            />
+          </div>
 
-            <div className="signUpBar">
-              <p className="signUpText">
-                Sign Up
-              </p>
-              <button className="signUpButton">
-                <ArrowRightIcon fill='#ffffff' width='34px' height='34px' />
-              </button>
-            </div>
-          </form>
-
-          {/* google OAuth */}
-
-          <Link to='/sign-in' className="registerLink">
-            Sign In Instead
+          <Link to='/forgot-password' className='forgotPasswordLink'>
+            Forgot Password
           </Link>
+
+          <div className='signInBar'>
+            <p className='signInText'>Sign In</p>
+            <button className='signInButton'>
+              <ArrowRightIcon fill='#ffffff' width='34px' height='34px' />
+            </button>
+          </div>
+        </form>
+
+        {/* google OAuth*/ }
+
+        <Link to='/sign-up' className='registerLink'>
+          Sign Up Instead
+        </Link>
       </div>
     </>
   )
 }
 
-export default SignUp
+export default SignIn

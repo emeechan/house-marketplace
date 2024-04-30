@@ -67,6 +67,12 @@ function SignUp() {
             <div className="inputGroup">
               <input type={showPassword ? 'text' : 'password'} className='passwordInput' placeholder=" Password" id="password" value={password} onChange={onChange} />
             </div>
+            <img
+              src={visibilityIcon}
+              alt='show password'
+              className='showPassword'
+              onClick={() => setShowPassword((prevState) => !prevState)}
+            />
 
             <Link to='/forgot-password' className="forgotPasswordLink">
               Forgot Password
@@ -83,10 +89,9 @@ function SignUp() {
           </form>
 
           {/* google OAuth */}
-
-          <Link to='/sign-in' className="registerLink">
-            Sign In Instead
-          </Link>
+          <Link to='/sign-in' className='registerLink'>
+          Sign In Instead
+        </Link>
       </div>
     </>
   )
