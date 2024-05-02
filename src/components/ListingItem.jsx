@@ -39,8 +39,8 @@ function ListingItem({listing, id, onDelete}) {
                     <img src={bathtubIcon} alt="bath" />
                     <p className="categoryListingInfoText">
                         {/* if more than one bathroom, say bathrooms, else say one bathroom, */}
-                        {listing.bathroom > 1 
-                        ? `${listing.bathroom} Bathrooms`
+                        {listing.bathrooms > 1 
+                        ? `${listing.bathrooms} Bathrooms`
                         : '1 Bathroom' }
                     </p>
                 </div>
