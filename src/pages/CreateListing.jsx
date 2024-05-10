@@ -90,7 +90,6 @@ function CreateListing() {
       } else {
         geoLocation.lat = latitude
         geoLocation.lng = longitude
-        location = address
       }
 
       //store images in firebase
@@ -146,9 +145,9 @@ function CreateListing() {
         timestamp: serverTimestamp()
       }
 
+      formDataCopy.location = address
       delete formDataCopy.images
       delete formDataCopy.address
-      location && (formDataCopy.location = location)
       //if no offer then delete discounted price
       !formDataCopy.offer && delete formDataCopy.discountedPrice
 
