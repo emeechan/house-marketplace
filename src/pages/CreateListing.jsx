@@ -1,6 +1,8 @@
+
 import { useState, useEffect, useRef } from "react"
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import {getStorage, ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
+import {Timestamp, addDoc, collection, serverTimestamp} from 'firebase/firestore'
 import {db} from '../firebase.config'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { toast } from "react-toastify"
@@ -137,7 +139,23 @@ function CreateListing() {
         return
       })
 
-      console.log(imageUrls)
+      const formDataCopy = {
+        ...formData,
+        imageUrls,
+        geoLocation,
+        timestamp: serverTimestamp()
+      }
+
+      delete formDataCopy.images
+      delete formDataCopy.address
+      location && (formDataCopy.location = location)
+      //if no offer then delete discounted price
+      !formDataCopy.offer && delete formDataCopy.discountedPrice
+
+      const docRef = await addDoc(collection(db, 'listings'), formDataCopy)
+      setLoading(false)
+      toast.success('Listing saved')
+      navigate(`/category/${formDataCopy.type}/${docRef.id}`)
 
       setLoading(false)
     }
